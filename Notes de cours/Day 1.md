@@ -104,3 +104,51 @@ Spark a une API, PySpark, R, Scala va communiquer avec Spark pour mettre en // l
 
 ### Lake House
 
+## data engineering in Azure
+
+Operational data -> Data ingestion/ETL -> Analytical data storage and processing -> Data modeling and visualization
+
+1 tenant est un locataire de Entra ID
+
+CosmosDB est une API qui intéragit avec des moteurs de BDD. Pour faire tourner sur Azure les bases NoSQL(MongoDB, Cassandra, Gremlin) mais aussi PostGreSQL (cosmosDB permet de faire du sharding), et Table
+
+Microsoft Dataverse (BDD qui contient la Data microsoft de PowerApps par exemple)
+
+### Operational Data
+
+Données d'application de production sous différentes formes:
+    - SQL
+    - CosmosDB
+    - EventHub: service qui permet de récupérer des data en entrée et de le transformer en événement
+
+### Data ingestion/ETL
+
+Azure Stream Analytics
+Azure Data Factory (automatiser ETL)
+Azure Synapse Analytics (C'est un workspace qui permet de gerer les IN et OUT des datas)
+
+### Analytical data storage and processing
+
+Data Warehouse
+Data Lake Storage
+Azure Databricks
+
+### Data modeling and visualization
+
+MS PowerBI
+
+### (bonus) Les régions dans Azure
+
+SLA (service level agreement) ou taux de disponibilité
+
+Le fournisseur du cloud est là pour répondre à des cas d'usages business.
+- L'infra dans un but de compliance business
+
+North Europe (Dublin)
+West Europe (Amsterdam)
+France Central (Paris)
+France South (Marseille) n'a qu'un seul datacenter et donc ne peut être définie qu'en région secondaire
+
+- Géographie (Europe (GDPR), France (HDS ou hébergeurs de données de santé))
+    - Paire de régions, des villes (Redondance multi-site) pour des raisons de connectivité en fibre (Les banques ont l'obligation d'avoir les données répliquées)
+        - Availability zone (3 datacenter dans chaque régions)
