@@ -137,7 +137,25 @@ Azure Databricks
 
 MS PowerBI
 
-### (bonus) Les régions dans Azure
+## Les informations demandées à chaque fois
+
+Les "élément de décision" obligatoires sont:
+- Subscriptions
+- Ressource groups
+- Regions
+
+### Subscriptions
+
+Périmètre de facturation
+Périmètre de sécurité (qui a accès à quelles actions pour l'utilisation des ressources)
+(optionel) il est possible de définir un périmètre de sécurité au dessus des Subscriptions, il s'agit du management group (permet de gérer plusieurs Subscriptions)
+
+### Ressource Group
+
+Aucune utilisation fonctionnelle. C'est pour le regroupement de ressources.
+Périmètre de sécurité. Permet de gérer les droits mais aussi les historiques de déploiement
+
+### Regions
 
 SLA (service level agreement) ou taux de disponibilité
 
@@ -152,3 +170,28 @@ France South (Marseille) n'a qu'un seul datacenter et donc ne peut être défini
 - Géographie (Europe (GDPR), France (HDS ou hébergeurs de données de santé))
     - Paire de régions, des villes (Redondance multi-site) pour des raisons de connectivité en fibre (Les banques ont l'obligation d'avoir les données répliquées)
         - Availability zone (3 datacenter dans chaque régions)
+
+### Storage account
+
+Service qui regroupe 4 services Data storage.
+- Container (service de stockage objet, utilise une API REST pour pouvoir intéragir avec l'objet)
+- File shares (SMB sur le cloud, besoin d'un système de fichier pour lire le fichier ici NTFS)
+- Queues (permet d'agir comme **buffer** pour permettre aux ressources d'assurer le service, permet de **découpler** les services qui génèrent la data et ceux qui traitent ou reçoivent la data, une queue est un subset d'un Bus) une queue est un bus avec un seul topic et un seul abonnement. Il permet donc de stocker des messages.
+- Tables (tableau qui peut faire office de table non relationnelle, comme excel basique sans macro etc. Accessible dans le cloud et très performant)
+
+Le coût de stockage est plus cher pour les données chaudes Premium > Hot > Cool > Cold > Archive
+La déduplication et la décompression ne coûte pas la même pour les ressources Premium < Hot < Cool < Cold < Archive
+
+Les fichiers sont stockés sous forme de bloc pour économiser la place. Mais nécessite une table de reconstruction pour lire les fichiers.
+La déduplication c'est de partitioner les fichiers et de supprimer les blocs dupliqués.
+Plus les blocs sont petits, plus on augmente les chances que les bloc identiques existent et donc prendre moins d'espace
+
+Premium = 0 déduplication => cher en espace mais moins cher en CPU
+Hot = + de déduplication
+Cool = ++ de déduplication
+Cold = +++ de déduplication
+Archive = ++++ de déduplication en plus de la réhydratation
+
+Pour les migrations il faut faire attention au vendor locking car la migration d'un vendor à l'autre nécessite souvent de payer les frais de READ de données.
+@ FinOps
+
