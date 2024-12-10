@@ -22,3 +22,7 @@ Formation
 
 https://learn.microsoft.com/fr-fr/credentials/certifications/azure-data-engineer/?practice-assessment-type=certification
 
+lms.godeploy.it
+rtm@gmail.com
+[usual]+00d3pl0yG
+4CAG3A
