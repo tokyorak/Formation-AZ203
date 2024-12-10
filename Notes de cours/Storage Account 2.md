@@ -9,7 +9,7 @@ Ce qui fait tourner les storage dans Azure sont des blobs.
 Il y a 3 type de premium pour Azure blob storage
 - file shares
 - block blobs (meilleur pour ETL/BDD)
-- page blobs (meilleur pour les OS)
+- page blobs (meilleur pour les OS, poru les opérations read/write fréquentes)
 
 ### Redondance
 
@@ -59,3 +59,10 @@ Il s'agit plus d'un système utilisé pour les workflow automatisés, notammment
 Il y a 2 clés access keys pour prévoir les rotations de clés sans que tout le système soit down pendant la regénération de l'une des deux. Ça existe pour la compliance.
 
 Donc IAM pour les personnes et SAS pour l'accès des applications
+
+
+Hierachical namespace: bascule le blob storage en HDFS
+
+
+Donc en conclusion il faut faire gaffe à:
+Redondance, droit, pricing, activer HDFS
