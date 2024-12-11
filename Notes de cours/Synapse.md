@@ -178,3 +178,21 @@ from
         FORMAT = 'PARQUET'
             ) AS orders 
 )
+```
+
+## Apache Spark
+
+Le Driver est une application qui permet de dispatcher et le code pour l'envoyer au gestionnaire/orchestrateur de cluster (comme Kubernetes)
+On-premise on utilise Kubernetes pour orchestrer un pool d'application Spark
+
+Sur Synapse, pour la création de pool Spark, le nombre de VM c'est au minimum 1 VM pour le controlleur et 2 noeuds pour faire un minimum de traitement parallèles à 2 noeuds. 
+Il est aussi possible de choisir le nombre d'exécuteurs de code. Dans l'idéal il faudrait avoir autant d'exécuteurs que de fichiers dans le Data Lake Store.
+Il faut avoir un nombre d'exécuteurs multiple de trois à cause du nombre de réplication sur Azure (3 en LRS ou ZRS ou autre).
+
+Il est possible d'utiliser des Magic keywords pour utiliser plusieurs langages dans le même notebook.
+
+On partitione via des dates pour avoir des partitions à peu prêt équilibrées,
+
+```py
+df.write.partitionBy("Year").mode("overwrite").parquet("/data")
+```
