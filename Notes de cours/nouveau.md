@@ -27,9 +27,11 @@ rtm@gmail.com
 [usual]+00d3pl0yG
 4CAG3A
 
-Attestation employeur datée de moins de 30 jours
-nature du contrat
-date d'embauche
-salaire brut annuel
-periode d'essai achevée
-secteur géographique de l'activité
+Pour faire un lab entre 150 et 200 €/mois devrait suffire pour explorer Azure sous un angle Data
+
+Day 4
+
+Streaming
+HTAP
+Databricks
+Compliance

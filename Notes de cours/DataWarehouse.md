@@ -58,3 +58,47 @@ ProductKey se réfère à la table de dimension DimProduct.
 StoreKey se réfère à la table de dimension DimStore.
 
 Les partitions dans les DW sont donc les mêmes que les partitions de fichiers pour les datalakes, c'est pour optimiser les recherches sur les data et n'existent pas encore physiquement
+
+En star schema il n'y a pas de foreign key. C'est le service consommateur qui va s'occuper de la logique.
+
+On peut lier des fichiers (depuis ADLS et sans stocker dans le DW) avec une table virtuelle (external table) pour faire du staging.
+Mais on peut ensuite le créer dans le DW avec les CTAS (Create Table As Select)
+
+On peut utiliser la [cheat sheet](https://learn.microsoft.com/en-us/azure/synapse-analytics/sql-data-warehouse/cheat-sheet) suivante.
+
+ON NE PEUT PAS UTILISER DE NOTEBOOK NI DE CLUSTER SPARK POUR REQUÊTER UNE TABLE SQL DEDIEE CAR CE N'EST PAS UN DATALAKE
+
+
+Exemple de code pour la mise à jour dans les DW
+
+```sql
+INSERT INTO dbo.DimCustomer ([GeographyKey],[CustomerAlternateKey],[Title],[FirstName],[MiddleName],[LastName],[NameStyle],[BirthDate],[MaritalStatus],
+[Suffix],[Gender],[EmailAddress],[YearlyIncome],[TotalChildren],[NumberChildrenAtHome],[EnglishEducation],[SpanishEducation],[FrenchEducation],
+[EnglishOccupation],[SpanishOccupation],[FrenchOccupation],[HouseOwnerFlag],[NumberCarsOwned],[AddressLine1],[AddressLine2],[Phone],
+[DateFirstPurchase],[CommuteDistance])
+SELECT *
+FROM dbo.StageCustomer AS stg
+WHERE NOT EXISTS
+    (SELECT * FROM dbo.DimCustomer AS dim
+    WHERE dim.CustomerAlternateKey = stg.CustomerAlternateKey);
+
+-- Type 1 updates (change name, email, or phone in place)
+UPDATE dbo.DimCustomer
+SET LastName = stg.LastName,
+    EmailAddress = stg.EmailAddress,
+    Phone = stg.Phone
+FROM DimCustomer dim inner join StageCustomer stg
+ON dim.CustomerAlternateKey = stg.CustomerAlternateKey
+WHERE dim.LastName <> stg.LastName OR dim.EmailAddress <> stg.EmailAddress OR dim.Phone <> stg.Phone
+
+-- Type 2 updates (address changes triggers new entry)
+INSERT INTO dbo.DimCustomer
+SELECT stg.GeographyKey,stg.CustomerAlternateKey,stg.Title,stg.FirstName,stg.MiddleName,stg.LastName,stg.NameStyle,stg.BirthDate,stg.MaritalStatus,
+stg.Suffix,stg.Gender,stg.EmailAddress,stg.YearlyIncome,stg.TotalChildren,stg.NumberChildrenAtHome,stg.EnglishEducation,stg.SpanishEducation,stg.FrenchEducation,
+stg.EnglishOccupation,stg.SpanishOccupation,stg.FrenchOccupation,stg.HouseOwnerFlag,stg.NumberCarsOwned,stg.AddressLine1,stg.AddressLine2,stg.Phone,
+stg.DateFirstPurchase,stg.CommuteDistance
+FROM dbo.StageCustomer AS stg
+JOIN dbo.DimCustomer AS dim
+ON stg.CustomerAlternateKey = dim.CustomerAlternateKey
+AND stg.AddressLine1 <> dim.AddressLine1;
+```
